@@ -1,0 +1,26 @@
+{
+  "name": "paystubs",
+  "version": "1.0.0",
+  "description": "Web service to process IBM paystubs",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "http": "^0.0.1-security"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obonobo/PayStubs.git"
+  },
+  "author": "Ethan Benabou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/obonobo/PayStubs/issues"
+  },
+  "homepage": "https://github.com/obonobo/PayStubs#readme"
+}
