@@ -3,7 +3,8 @@
  */
 const http = require('http');
 
-const hostname = '0.0.0.0';
+const hostAllInterfaces = '0.0.0.0';
+const localHost = '127.0.0.1';
 const port = 3000;
 
 const server = http.createServer((req, res) => {
@@ -12,6 +13,8 @@ const server = http.createServer((req, res) => {
   res.end('Hello World!');
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+const myHost = localHost;
+server.listen(port, myHost, () => 
+{
+  console.log(`Server running at http://${myHost}:${port}/`);
 });
