@@ -1,3 +1,7 @@
+# MongoDB Configuration
+etc/*
+!etc/mongod.conf
+
 # Logs
 logs
 *.log
