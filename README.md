@@ -26,7 +26,7 @@ To set up a new database, we can do the following:
 sudo docker run -e MONGO_INITDB_ROOT_USERNAME="mongoadmin" -e MONGO_INITDB_ROOT_PASSWORD="Admin123!" -v /home/ethan/mongodata:/data -p 33333:27017 --name mongo1 -d mongo --auth
 ```
 
-# Database Schema
+## Database Schema
 In Mongodb data is organized like so: database > collection > record (BSON)
 
 The schema that I am thinking about is:

@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /***
  * A business entity is like IBM or ceridian. 
  * It has a name and a code associated.
  */
-const business = new Schema({
+const business : Schema = new Schema({
   name: {type: String},
   code: {
     type: String, 
@@ -19,7 +18,7 @@ const business = new Schema({
  * name and serial number.
  * NOTE: I have left no limit on serial number size
  */
-const person = new Schema({
+const person : Schema = new Schema({
   name: {
     first: String,
     last: String
@@ -30,7 +29,7 @@ const person = new Schema({
 /***
  * Represents a charge to a business account
  */
-const accountCharge = new Schema({
+const accountCharge : Schema = new Schema({
   accNum: String,
   charge: Number
 });
@@ -39,7 +38,7 @@ const accountCharge = new Schema({
  * Contains exemptions and estimated earnings 
  * NOTE: helpCentre should be a phone number
  */
-const taxInfo = new Schema({
+const taxInfo : Schema = new Schema({
   personalExempt: Number,
   specialExempt: Number,
   additionalTax: Number,
@@ -52,7 +51,7 @@ const taxInfo = new Schema({
  * Paystubs documents should include the information below.
  * For now, I haven't made any fields required
  */
-const payStubSchema = new Schema({
+const payStubSchema : Schema = new Schema({
   
   // Our two business entities
   processor: business,
@@ -96,6 +95,21 @@ const payStubSchema = new Schema({
   },
 
   netDeposit: { current: Number, YTD: Number }
+}, { 
+  
+  /**
+   * Collation = rules for string comparison
+   * 
+   * Here we are also specifying a collation for our schema
+   * Collation is feature that allows you to specify
+   * some options for string comparisons, like case insensitive, etc. 
+   */
+  collation: {
+    locale: 'en_US',    // Mandatory when specifying collation
+    strength: 1,        // Perform comparison of base chars only, no case etc.
+    caseFirst: "upper", // Sort order, "upper" -> Upper case sorts higher than lower
+    numericOrdering: true, // Compare numeric strings as numbers
+  }
 });
 
-module.exports = mongoose.model("PayStub", PayStubSchema);
+export default payStubSchema;
