@@ -2,6 +2,7 @@
  * This is my starter app
  */
 const http = require('http');
+const utils = require('./utils/mongodb-utils');
 
 const hostAllInterfaces = '0.0.0.0';
 const localHost = '127.0.0.1';
@@ -14,7 +15,8 @@ const server = http.createServer((req, res) => {
 });
 
 const myHost = localHost;
-server.listen(port, myHost, () => 
-{
+server.listen(port, myHost, () => {
   console.log(`Server running at http://${myHost}:${port}/`);
 });
+
+utils.initPayStubsDB();
