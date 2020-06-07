@@ -10,7 +10,7 @@ Below is the docker command that I use for connecting to an existing MongoDB in 
 
 The --auth at the end tells mongod that we want to enable authentication on our database.
 
-To authenticate with the database, we can place our credentials in the connection string, or use the database command:
+To authenticate with the database, we can place our credentials in the connection string, or use the database command (not the real credentials):
 
 ```
 db.auth({user: "mongoadmin", pwd: "Admin123!"})

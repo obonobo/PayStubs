@@ -1,0 +1,50 @@
+Statement of Earnings and Deductions
+IBM CANADA
+For more information regarding the format or content of your pay statement,
+please visit our web site http://w3-01.ibm.com/hr/web/ca/payroll/
+
+
+
+
+
+
+
+01    CERIDIAN                        PAY STATEMENT                                                  
+0202 IBM CDA LTD (PERSONAL)           PAY PERIOD END DATE - 05/22/20                                  
+NAME    :      BENABOU, ETHAN                           SERIAL # :     0B1815                        
+ADDRESS :          /0T4I/ 37A/ OTT                                                                    
+                                                       |---------------------------------------------
+                                                       |                                              
+                                                       | TAX INFORMATION     FEDERAL       PROV      
+                         *PERSONAL*                    |                                              
+                                                       |                                              
+                                                       | PERSONAL EXEMPT       12298      10783      
+DEPOSIT DATE                                 05/29/20  | SPECIAL EXEMPT                              
+PROFILE SALARY                                 938.40  | ADDITIONAL TAX                              
+BI-WEEKLY GROSS/HOURLY RATE                   23.4600  | EST. EARNINGS                                
+                                                       | EST. EXPENSES                                
+EARNINGS ACCT.00447681 6376133      AMOUNT    1521.40  | HELP CENTRE:1-866-214-0977                  
+EXPENSE ACCT. 00447681 6376133      AMOUNT        .    |                                              
+
+-----------------------------------------------------------------------------------------------------
+
+PAYMENTS                  WEEK ENDING       HOURS        CURRENT          YTD                        
+REGULAR PAY                05/15/20           40.00        938.40                                    
+REGULAR PAY                05/22/20           40.00        938.40      2,815.20                      
+VAC.PAY - SUPPS                                             75.07        112.61                      
+*TOTAL PAYMENTS                                          1,951.87      2,927.81                      
+
+DEDUCTIONS                                               CURRENT          YTD                        
+CPP/QPP DED                                                 95.41        139.58                      
+EI DED                                                      30.84         46.26                      
+FEDERAL TAX                                                304.22        400.41                      
+*TOTAL DED'NS                                              430.47        586.25                      
+
+NET DEPOSIT                                              1,521.40      2,341.56                      
+
+
+
+Total Net Payment will be posted to your financial institution account on the  
+designated deposit date.
+
+    DO NOT REPLY OR FORWARD NOTES TO THE ID THAT TRANSMITTED THIS STATEMENT

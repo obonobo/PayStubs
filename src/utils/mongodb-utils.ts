@@ -1,24 +1,42 @@
 import mongoose, { Connection } from "mongoose";
-
-// Credentials and authentication mechanism
-let user: string = encodeURIComponent('mongoadmin');
-let pass: string = encodeURIComponent('Admin123!');
-let connectionURL: string = `mongodb://${user}:${pass}@laptop1.local:33333/paystubs`;
+import { Logger } from "log4js";
+import {PayStubSchema} from '../schemas/PayStubschema';
+import { dbConfig } from '../config';
 
 /**
  * Connect to the database
- * @returns A connection object to your database.
+ * @returns A connection object to your database
  */
-const getDbConn: Function = function(): Connection {
-  
-  // Create the connection 
-  const conn: Connection = mongoose.createConnection(connectionURL, {useNewUrlParser: true});
+export function getDbConn(logger: Logger): Connection {
+    logger.debug('GETTING DB CONNECTION...')
 
-  // Add a model to our connection
-  conn.model('PayStub', require('../schemas/paystubschema'));
+    // Create the connection 
+    let ret: Connection = null;
+    const conn = mongoose.createConnection(dbConfig.db_URL, {
+        useNewUrlParser: true, useUnifiedTopology: true,
+        keepAlive: true, reconnectInterval: 500,
+        connectTimeoutMS: 10000,
+        user: dbConfig.connectionOpts.user, pass: dbConfig.connectionOpts.pass
+    });
+    conn.catch(err => {
+        logger.error('Oops! Unable to connect...');
+        logger.error(`Received the following error:\n${err}`);
+        ret = null;
+    });
 
-  // Pass our connection to caller
-  return conn;
+    conn.on('error', err => {
+        logger.error('Oops! Unable to connect...');
+        logger.error(`Received the following error:\n${err}`);
+        ret = null;
+    });
+    conn.on('connected', () => {
+        logger.info('Connection Successful!');
+        ret = conn;
+    });
+
+    // Add a model to our connection
+    conn.model('PayStub', PayStubSchema);
+
+    // Pass our connection to caller
+    return ret;
 };
-
-export default getDbConn;

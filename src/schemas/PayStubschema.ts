@@ -51,7 +51,7 @@ const taxInfo : Schema = new Schema({
  * Paystubs documents should include the information below.
  * For now, I haven't made any fields required
  */
-const payStubSchema : Schema = new Schema({
+export const PayStubSchema : Schema = new Schema({
   
   // Our two business entities
   processor: business,
@@ -111,5 +111,3 @@ const payStubSchema : Schema = new Schema({
     numericOrdering: true, // Compare numeric strings as numbers
   }
 });
-
-export default payStubSchema;
