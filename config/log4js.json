@@ -1,0 +1,9 @@
+{
+    "appenders": {
+        "stdout": { "type": "stdout", "layout": { "type": "messagePassThrough" }},
+        "file": { "type": "file", "filename": "log4js.log"}
+    },
+    "categories": {
+        "default":  { "appenders": ["stdout", "file"], "level": "debug"}
+    }
+}

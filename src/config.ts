@@ -19,5 +19,5 @@ export const dbConfig = {
  */
 export const appConfig = {
     listenPort: 3000,
-    hostIP: 'localhost'
+    hostIP: '0.0.0.0'
 }
