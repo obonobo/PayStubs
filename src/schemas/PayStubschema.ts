@@ -4,7 +4,7 @@ import { Schema } from 'mongoose';
  * A business entity is like IBM or ceridian. 
  * It has a name and a code associated.
  */
-const business : Schema = new Schema({
+const businessSchema : Schema = new Schema({
   name: {type: String},
   code: {
     type: String, 
@@ -18,9 +18,9 @@ const business : Schema = new Schema({
  * name and serial number.
  * NOTE: I have left no limit on serial number size
  */
-const person : Schema = new Schema({
+const personSchema : Schema = new Schema({
   name: {
-    first: String,
+    first: String, 
     last: String
   },
   serial: String
@@ -47,22 +47,24 @@ const taxInfo : Schema = new Schema({
   helpCentre: String
 });
 
+
 /***
  * Paystubs documents should include the information below.
- * For now, I haven't made any fields required
+ * For now, the only required fields are the personal 
+ * information (name, serial #).
  */
 export const PayStubSchema : Schema = new Schema({
   
   // Our two business entities
-  processor: business,
-  employer: business,
+  processor: businessSchema,
+  employer: businessSchema,
 
   // Dates from the top of your stub
   payPeriodEndDate: Date,
   depositeDate: Date,
 
   // Personal info
-  me: person,
+  me: { type: personSchema, required: true },
   profileSalary: Number,
   hourlyWage: Number,
 

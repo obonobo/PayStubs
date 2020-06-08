@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { configure, getLogger, Logger } from 'log4js';
 import mongoose from 'mongoose';
 
@@ -6,6 +6,7 @@ import { appConfig, dbConfig } from './config';
 import exampleData from './extra/ExamplePaystub';
 import { hookShutdown } from './nodehooks';
 import { PayStubSchema } from './schemas/PayStubschema';
+import { StubParser } from './StubParser';
 
 // Logger information
 configure('./config/log4js.json');
@@ -13,7 +14,7 @@ const myLogger: Logger = getLogger();
 myLogger.level = dbConfig.logLevel;
 
 // Register some hooks on the node process
-hookShutdown(process, mongoose);
+hookShutdown(process, mongoose, myLogger);
 
 /**
  * Saves to the database
@@ -57,7 +58,7 @@ app.get('/', function (req, res) {
     res.send('Hello, World!');
 });
 
-// For giving paystubs
+// This route handles paystub 
 app.post('/paystub', function(req, res) {
     myLogger.info(`A paystub request of type: "${req.get('Content-Type')}" has been received:\n`);
     myLogger.info(`It was sent from address: ${req.ip}`);
