@@ -1,12 +1,12 @@
-import express, { Router } from 'express';
+import express from 'express';
 import { configure, getLogger, Logger } from 'log4js';
 import mongoose from 'mongoose';
 
 import { appConfig, dbConfig } from './config';
+import { exampleData } from './extra/ExamplePaystub';
 import { hookShutdown } from './nodehooks';
 import { PayStubSchema } from './schemas/PayStubschema';
 import { IBMStubParser, testSample } from './StubParser';
-import { exampleData } from './extra/ExamplePaystub';
 
 // Logger information
 configure('./config/log4js.json');
