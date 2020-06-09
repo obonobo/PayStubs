@@ -2,8 +2,9 @@
 etc/*
 !etc/mongod.conf
 
-# 
-.vscode
+# I actually want to keep this launch.json configuration
+# just as a reference/reminder
+# .vscode
 
 
 # Logs

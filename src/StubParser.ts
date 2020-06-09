@@ -11,13 +11,11 @@ type wkWeek = {
  * A class that parses an IBM paystub. One-time use only.
  * Alternatively, you can use the static method.
  */
-export class StubParser {
+export class IBMStubParser  {
 
     private stub: string
     private parsed: boolean
-    private delim: RegExp
-    private result: Object
-    private parserFunction: ParsingFunction
+    private parserFunction: Function
 
     public static regular = /^REGULAR$/;
     public static pay = /^PAY$/;
@@ -26,40 +24,12 @@ export class StubParser {
     public static hours = /^\d{1,2}\.?\d{0,2}$/;
 
     /**
-     * An example of the layout require for the data
-     */
-    private templateData = {
-        processor: { name: "", code: "" },
-        employer: { name: "", code: "" },
-        payPeriodEndDate: '',
-        depositeDate: '',
-        me: { name: { first: '', last: '' }, serial: '' },
-        profileSalary: '',
-        hourlyWage: '',
-        earningsAcc: { accNum: '', charge: '' },
-        expenseAcc: { accNum: '', charge: '' },
-        taxInformation: {
-            federal:    { personalExempt: '', specialExempt: '', additionalTax: '', 
-                          estEarnings: '', estExpenses: '', helpCentre: "" },
-            provincial: { personalExempt: '',specialExempt: '',additionalTax: '',
-                          estEarnings: '',estExpenses: '',helpCentre: "" }
-        },
-        weeklyPay: [{ endingDate: '',hours: '',current: '',YTD: '' }],
-        vacationPay: { current: '', YTD: '' },
-        totalPay: { current: '', YTD: '' },
-        deductions: { CPP_QPP: { current: '', YTD: '' },EI: { current: '', YTD: '' },
-                     fedTax: { current: '', YTD: '' },total: { current: '', YTD: '' }},
-        netDeposit: { current: '', YTD: '' }
-    }
-
-    /**
      * Creates a new parser object.
      * @param stub The stub that you would like to parse
      */
-    public constructor(stub: string, parserFunction = StubParser.defaultParserFunction) {
+    public constructor(stub: string, parserFunction = IBMStubParser.defaultParserFunction) {
         this.stub = stub;
         this.parsed = false;
-        this.result = null;
         this.parserFunction = parserFunction;
     }
 
@@ -75,13 +45,14 @@ export class StubParser {
     // Getters
     public isParsed() { return this.parsed; }
     public getStub() { return new String(this.stub) }
-    public getParsed() { if (this.isParsed) return this.result }
 
     /**
      * The default parsing function of a stub parser
      * @param stub 
      */
-    private defaultParserFunction(stub: string) {
+    private static defaultParserFunction(stub: string) {
+        let ret: any = {};
+
         let data = stub.replace(/(\n|\r)+/g, ' ').split(/ +/);
         // Remove the excess up to the 'regular pay' section
         data.splice(0, 25); data.splice(2, 2);  data.splice(4, 8);
@@ -91,12 +62,17 @@ export class StubParser {
         data.splice(17, 14);
     
         // Extract the set of regular pay weeks
+        ret.weeklyPay = [];
         let workWeeks: Array<wkWeek> = [];
         let count = 0;
-        while (StubParser.regular.test(data[17])) {
-            workWeeks[count] = StubParser.parseRegularPay(data, 17);
+        while (IBMStubParser.regular.test(data[17])) {
+            workWeeks[count] = IBMStubParser.parseRegularPay(data, 17);
             data.splice(workWeeks[count].startIndex, 
                         workWeeks[count].endIndex - workWeeks[count].startIndex);
+
+            delete workWeeks[count].endIndex;
+            delete workWeeks[count].startIndex;
+            ret.weeklyPay.push(workWeeks[count]);
             count++;
         }
         
@@ -105,12 +81,56 @@ export class StubParser {
         data.splice(23, 2); data.splice(25, 2); data.splice(27, 2);
         data.splice(29, 2); data.splice(31, data.length - 31); 
     
-        let t = this.templateData;
+        // Build a new object.
+        ret.processor = {};
+        ret.employer = {};
+        ret.expenseAcc = {};
+        ret.vacationPay = {};
+        ret.totalPay = {};
+        ret.netDeposit = {};
+        ret.me = { name: {} };
+        ret.taxInformation = { federal: {
+            personalExempt: 0, specialExempt: 0, additionalTax: 0, 
+            estEarnings: 0, estExpenses: 0, helpCentre: 0 
+        }, provincial: {
+            personalExempt: 0, specialExempt: 0, additionalTax: 0, 
+            estEarnings: 0, estExpenses: 0, helpCentre: 0
+        }};
+        ret.deductions = { CPP_QPP: {}, EI: {}, fedTax: {}, total: {} };
+        ret.processor.code = data.shift();
+        ret.processor.name = data.shift();
+        ret.employer.code = data.shift();
+        ret.employer.name = data.shift();
+        ret.payPeriodEndDate = new Date(data.shift());
+        ret.me.name.last = data.shift().replace(',', '');
+        ret.me.name.first = data.shift();
+        ret.me.serial = data.shift();
+        ret.taxInformation.federal.personalExempt = Number.parseFloat(data.shift());
+        ret.taxInformation.provincial.personalExempt = Number.parseFloat(data.shift());
+        ret.depositeDate = new Date(data.shift());
+        ret.profileSalary = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.hourlyWage = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.expenseAcc.accNum = data.shift().replace(/[aA-zZ\.]/g, '').concat(data.shift());
+        ret.expenseAcc.charge = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.taxInformation.federal.helpCentre 
+            = ret.taxInformation.provincial.helpCentre 
+            = data.shift().replace(/[aA-zZ\:]/g, '');
+        ret.vacationPay.current = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.vacationPay.YTD = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.totalPay.current = Number.parseFloat(data.shift().replace(/,/g,''));
+        ret.totalPay.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.CPP_QPP.current = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.CPP_QPP.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.EI.current = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.EI.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.fedTax.current = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.fedTax.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.total.current = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.deductions.total.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.netDeposit.current = Number.parseFloat(data.shift().replace(/,/g, ''));
+        ret.netDeposit.YTD = Number.parseFloat(data.shift().replace(/,/g, ''));
 
-        t.
-
-        // Start building our return value
-        return this.templateData; 
+        return ret; 
     }
 
     /**
@@ -143,19 +163,13 @@ export class StubParser {
         let ele = data[current];
         while ((date.test(ele) || payment.test(ele) || hours.test(ele)) && count < 4) {
             let temp = ele;
-            // console.log(temp);
             count++; current++;
             ele = data[current];
             if (date.test(temp)) {
-                // console.log('MATCHED DATE');
                 myPay.endingDate = new Date(temp);
             } else if (hours.test(temp)) {
-                // console.log('MATCHED HOURS');
-                
                 myPay.hours = Number.parseFloat(temp);
             } else if (payment.test(temp)) {
-                // console.log('MATCHED PAYMENT');
-                
                 myPay[almostIter.values[almostIter.current++]]
                     = Number.parseFloat(temp.replace(',', ''));
             }
@@ -164,4 +178,71 @@ export class StubParser {
         myPay.endIndex = i + count + 2;
         return myPay;
     }
+
+    /**
+     * Prints the values contained within a nested object.
+     * @param obj The object to print. 
+     */
+    public static printNestedObj(obj: Object): void {
+        for (let key in obj) {
+            if (typeof obj[key] === 'object') {
+                console.log(`${key}: {`);
+                IBMStubParser.printNestedObj(obj[key]);
+                console.log('}');
+            } else {
+                console.log(`${key}: ${obj[key]}`);
+            }
+        }
+    }
 }
+
+export const testSample: string = `Statement of Earnings and Deductions
+IBM CANADA
+For more information regarding the format or content of your pay statement,
+please visit our web site http://w3-01.ibm.com/hr/web/ca/payroll/
+
+
+
+
+
+
+
+01    CERIDIAN                        PAY STATEMENT                                                  
+0202 IBM CDA LTD (PERSONAL)           PAY PERIOD END DATE - 05/22/20                                  
+NAME    :      BENABOU, ETHAN                           SERIAL # :     0B1815                        
+ADDRESS :          /0T4I/ 37A/ OTT                                                                    
+                                                       |---------------------------------------------
+                                                       |                                              
+                                                       | TAX INFORMATION     FEDERAL       PROV      
+                         *PERSONAL*                    |                                              
+                                                       |                                              
+                                                       | PERSONAL EXEMPT       12298      10783      
+DEPOSIT DATE                                 05/29/20  | SPECIAL EXEMPT                              
+PROFILE SALARY                                 938.40  | ADDITIONAL TAX                              
+BI-WEEKLY GROSS/HOURLY RATE                   23.4600  | EST. EARNINGS                                
+                                                       | EST. EXPENSES                                
+EARNINGS ACCT.00447681 6376133      AMOUNT    1521.40  | HELP CENTRE:1-866-214-0977                  
+EXPENSE ACCT. 00447681 6376133      AMOUNT        .    |                                              
+
+-----------------------------------------------------------------------------------------------------
+
+PAYMENTS                  WEEK ENDING       HOURS        CURRENT          YTD                        
+REGULAR PAY                05/15/20           40.00        938.40                                    
+REGULAR PAY                05/22/20           40.00        938.40      2,815.20                      
+VAC.PAY - SUPPS                                             75.07        112.61                      
+*TOTAL PAYMENTS                                          1,951.87      2,927.81                      
+
+DEDUCTIONS                                               CURRENT          YTD                        
+CPP/QPP DED                                                 95.41        139.58                      
+EI DED                                                      30.84         46.26                      
+FEDERAL TAX                                                304.22        400.41                      
+*TOTAL DED'NS                                              430.47        586.25                      
+
+NET DEPOSIT                                              1,521.40      2,341.56                      
+
+
+
+Total Net Payment will be posted to your financial institution account on the  
+designated deposit date.
+
+    DO NOT REPLY OR FORWARD NOTES TO THE ID THAT TRANSMITTED THIS STATEMENT`

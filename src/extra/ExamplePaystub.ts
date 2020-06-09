@@ -1,4 +1,4 @@
-const exampleData = {
+export const exampleData = {
   processor: {
     name: "CERIDIAN", code: "01"
   },
@@ -73,79 +73,27 @@ const exampleData = {
   netDeposit: { current: 1521.40, YTD: 2341.56 }
 };
 
-export default exampleData;
 
-const exampleDataEmpty = {
-  processor: {
-    name: "", code: ""
-  },
-  employer: {
-    name: "", code: ""
-  },
-
+export const exampleDataEmpty = {
+  processor: { name: "", code: "" },
+  employer: { name: "", code: "" },
   payPeriodEndDate: '',
   depositeDate: '',
-
-  me: {
-    name: {
-      first: '', last: ''
-    },
-    serial: ''
-  },
+  me: { name: { first: '', last: '' }, serial: '' },
   profileSalary: '',
   hourlyWage: '',
-
-  earningsAcc: {
-    accNum: '',
-    charge: ''
-  },
-  expenseAcc: {
-    accNum: '',
-    charge: ''
-  },
-
+  earningsAcc: { accNum: '', charge: '' },
+  expenseAcc: { accNum: '', charge: '' },
   taxInformation: {
-    federal: {
-      personalExempt: '',
-      specialExempt: '',
-      additionalTax: '',
-      estEarnings: '',
-      estExpenses: '',
-      helpCentre: ""
-    },
-    provincial: {
-      personalExempt: '',
-      specialExempt: '',
-      additionalTax: '',
-      estEarnings: '',
-      estExpenses: '',
-      helpCentre: ""
-    }
+      federal:    { personalExempt: '', specialExempt: '', additionalTax: '', 
+                    estEarnings: '', estExpenses: '', helpCentre: "" },
+      provincial: { personalExempt: '',specialExempt: '',additionalTax: '',
+                    estEarnings: '',estExpenses: '',helpCentre: "" }
   },
-
-  weeklyPay: [
-    {
-      endingDate: '',
-      hours: '',
-      current: '',
-      YTD: ''
-    },
-    {
-      endingDate: '',
-      hours: '',
-      current: '',
-      YTD: ''
-    }
-  ],
+  weeklyPay: [{ endingDate: '',hours: '',current: '',YTD: '' }],
   vacationPay: { current: '', YTD: '' },
   totalPay: { current: '', YTD: '' },
-
-  deductions: {
-    CPP_QPP: { current: '', YTD: '' },
-    EI: { current: '', YTD: '' },
-    fedTax: { current: '', YTD: '' },
-    total: { current: '', YTD: '' }
-  },
-
+  deductions: { CPP_QPP: { current: '', YTD: '' },EI: { current: '', YTD: '' },
+               fedTax: { current: '', YTD: '' },total: { current: '', YTD: '' }},
   netDeposit: { current: '', YTD: '' }
 };
