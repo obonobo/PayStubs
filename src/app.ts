@@ -8,6 +8,8 @@ import { hookShutdown } from './nodehooks';
 import { PayStubSchema } from './schemas/PayStubschema';
 import { IBMStubParser, testSample } from './StubParser';
 
+// ** ==================== APP LOGIC ========================== **
+
 // Logger information
 configure('./config/log4js.json');
 const myLogger: Logger = getLogger();
@@ -45,7 +47,7 @@ const saveReq = function(): void {
         });
 }
 
-// TODO ==================== EXPRESS ==========================
+// ?? ==================== EXPRESS ========================== ??
 // App information
 const app = express();
 
@@ -57,7 +59,7 @@ app.use(express.json());
 app.get('/', function (req, res) {
     res.send('Hello, World!');
 });
-
+``
 // This route handles paystub 
 app.post('/paystub', function(req, res) {
     myLogger.info(`A paystub request of type: "${req.get('Content-Type')}" has been received:\n`);
@@ -68,7 +70,7 @@ app.post('/paystub', function(req, res) {
     let parsed = myParser.parse();
 
     myLogger.info(parsed);
-    res.json({ parsed: parsed });
+    res.status(200).send('Your paystub has been received and processed!');
 });
 
 app.listen(appConfig.listenPort, err => {
@@ -76,14 +78,15 @@ app.listen(appConfig.listenPort, err => {
         myLogger.error(`Something went wrong while listening: ${err}`);
         throw err;
     }
-    myLogger.info(`PayStubs listening @ http://${appConfig.hostIP}:${appConfig.listenPort}`);
+    myLogger.info(`Listening for PayStubs @ ` 
+                + `http://${appConfig.hostIP}:${appConfig.listenPort}${appConfig.payStubsRoute}`);
 });
 
 // TODO ==================== TEST ==========================
 const testAxios = function () {
     const axios = require('axios');
     const headers = { 'Content-Type': 'application/json' }
-    const res = axios.post('http://localhost:3000/paystub', {
+    axios.post(`http://localhost:${appConfig.listenPort}/paystub`, {
       stub: testSample
     }, { headers } ).then(val => {
         myLogger.info(`Here is your response: "${val.data.stub}".`);
@@ -91,5 +94,4 @@ const testAxios = function () {
         myLogger.error(`${err}`);
     });
 }
-
 testAxios();
