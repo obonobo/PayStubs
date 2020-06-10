@@ -19,6 +19,6 @@ export const dbConfig = {
  */
 export const appConfig = {
     listenPort: 3000,
-    hostIP: '0.0.0.0',
-    payStubsRoute: '/paystub'
+    hostIP: '127.0.0.1',
+    payStubsRoute: '/paystub/'
 }

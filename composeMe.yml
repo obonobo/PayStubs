@@ -1,0 +1,29 @@
+# The paystubs app needs at least 3 services in total
+
+# For now this file is just an outline but we will need at least the following:
+
+services:
+
+    # For reverse proxying
+    nginx_server:
+        image: nginx
+        container_name: nginx_container
+        restart: always
+        ports:
+            # TODO Determine the correct ports to place here
+            # - TBD
+        environment: 
+            # TODO Maybe you also need some environment variables 
+    
+    # For the paystubs database
+    mongo_server:
+        image: mongo
+        container_name: mongo_container
+        restart: always
+        ports:
+            # TODO Determine the correct ports to place here
+            # - TBD
+        environment: 
+            # TODO Maybe you also need some environment variables 
+    
+    

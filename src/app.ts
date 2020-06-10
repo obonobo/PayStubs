@@ -1,9 +1,10 @@
 import express from 'express';
 import { configure, getLogger, Logger } from 'log4js';
 import mongoose from 'mongoose';
+import { dirname } from "path";
+import { realpathSync } from "fs";
 
 import { appConfig, dbConfig } from './config';
-import { exampleData } from './extra/ExamplePaystub';
 import { hookShutdown } from './nodehooks';
 import { PayStubSchema } from './schemas/PayStubschema';
 import { IBMStubParser, testSample } from './StubParser';
@@ -11,17 +12,19 @@ import { IBMStubParser, testSample } from './StubParser';
 // ** ==================== APP LOGIC ========================== **
 
 // Logger information
-configure('./config/log4js.json');
+configure(__dirname + '/../config/log4js.json');
 const myLogger: Logger = getLogger();
 myLogger.level = dbConfig.logLevel;
 
 // Register some hooks on the node process
+// This will close the database connection when Node is closed
 hookShutdown(process, mongoose, myLogger);
 
 /**
  * Saves to the database
+ * @param data The data to be saved 
  */
-const saveReq = function(): void {
+const saveReq = function(data: Object): void{
     // Testing db connection
     myLogger.info('Attempting Database Connection...');
 
@@ -29,21 +32,21 @@ const saveReq = function(): void {
     mongoose.connect(dbConfig.db_URL, dbConfig.connectionOpts)
         .then(() => myLogger.info('Connection Successful!'))
         .catch(err => {
-            myLogger.error(`Could not connect: ${err}`);
-            process.exit(1);
+            let msg: string = `Could not connect: ${err}`;
+            throw new Error(msg);
         }).then(() => {
             myLogger.info('Attempting to save your data...');
         });
 
     // Make a new document
     let PayStub = mongoose.model('PayStub', PayStubSchema);
-    let payStub = new PayStub(exampleData);
+    let payStub = new PayStub(data);
 
     payStub.save()
         .then(val => myLogger.info(`Document saved! It's ID is: ${val._id}`))
         .catch(err => {
-            myLogger.error(`Failed to save document: ${err}`);
-            process.exit(1);
+            let msg: string = `Failed to save document: ${err}`;
+            throw new Error(msg);
         });
 }
 
@@ -59,7 +62,7 @@ app.use(express.json());
 app.get('/', function (req, res) {
     res.send('Hello, World!');
 });
-``
+
 // This route handles paystub 
 app.post('/paystub', function(req, res) {
     myLogger.info(`A paystub request of type: "${req.get('Content-Type')}" has been received:\n`);
@@ -69,7 +72,17 @@ app.post('/paystub', function(req, res) {
     let myParser: IBMStubParser = new IBMStubParser(req.body.stub);
     let parsed = myParser.parse();
 
+    // Attempt to save to the db
+    try {
+        myLogger.info(`ABOUT TO SAVE DATA`);
+        saveReq(parsed);
+    } catch (e) {
+        myLogger.log(e);
+    }
+
     myLogger.info(parsed);
+    myLogger.info(`========== REQUEST SAVED ==============`);
+    myLogger.info(`========== GIVE ME MOAR STUBS ==========`);
     res.status(200).send('Your paystub has been received and processed!');
 });
 
@@ -78,8 +91,9 @@ app.listen(appConfig.listenPort, err => {
         myLogger.error(`Something went wrong while listening: ${err}`);
         throw err;
     }
-    myLogger.info(`Listening for PayStubs @ ` 
-                + `http://${appConfig.hostIP}:${appConfig.listenPort}${appConfig.payStubsRoute}`);
+    myLogger.info(`========== Listening for PayStubs @ ` 
+                + `http://${appConfig.hostIP}:${appConfig.listenPort}${appConfig.payStubsRoute}` 
+                + ` ==========`);
 });
 
 // TODO ==================== TEST ==========================
@@ -89,7 +103,7 @@ const testAxios = function () {
     axios.post(`http://localhost:${appConfig.listenPort}/paystub`, {
       stub: testSample
     }, { headers } ).then(val => {
-        myLogger.info(`Here is your response: "${val.data.stub}".`);
+        myLogger.info(`Here is your response: "${val}".`);
     }).catch(err => {
         myLogger.error(`${err}`);
     });
