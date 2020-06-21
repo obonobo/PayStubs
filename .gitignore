@@ -2,7 +2,7 @@
 data
 TEST_DATA
 temp.txt
-test.json
+test.*
 *.tar
 
 # MongoDB Configuration

@@ -19,15 +19,15 @@ spec:
     spec:
       containers:
         - name: paystubs
-          image: docker.io/utils/paystubs:v1.1
+          image: docker.io/utils/paystubs:v1.2
           ports:
             - containerPort: 3000
           env:
             # For MongoDB
             - name: DB_PORT
-              value: "31688"
+              value: "30768"
             - name: DB_IP
-              value: "192.168.2.57"
+              value: "192.168.2.50"
             - name: DB_NAME
               value: paystubs
             - name: LOG_LEVEL
@@ -49,7 +49,7 @@ spec:
             - name: PAYSTUBS_PORT
               value: "3000"
             - name: PAYSTUBS_IP
-              value: "localhost"
+              value: "0.0.0.0" #!!! DO NOT PUT LOCALHOST, YOU WANT TO LISTEN ON ALL IP
             - name: PAYSTUBS_ROUTE
               value: "/paystub/"
               

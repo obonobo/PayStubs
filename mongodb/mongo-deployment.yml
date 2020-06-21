@@ -24,7 +24,7 @@ spec:
             claimName: paystub-pv-claim 
       containers:
         - name: mongo1
-          image: localhost:32000/utils/mongo:registry
+          image: docker.io/utils/mongo:v1
           ports: 
             - containerPort: 27017
           volumeMounts:

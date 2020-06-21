@@ -1,6 +1,6 @@
 FROM ubuntu
 
-RUN apt-get update && apt-get install -y nodejs nano
+RUN apt-get update && apt-get install -y nodejs nano curl
 
 RUN mkdir /PayStubs
 
