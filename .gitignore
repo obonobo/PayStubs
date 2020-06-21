@@ -3,6 +3,7 @@ data
 TEST_DATA
 temp.txt
 test.json
+*.tar
 
 # MongoDB Configuration
 etc/*

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: paystubs
-          image: localhost:32000/utils/paystubs:registry
+          image: docker.io/utils/paystubs:v1.1
           ports:
             - containerPort: 3000
           env:

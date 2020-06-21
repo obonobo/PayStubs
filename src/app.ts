@@ -1,8 +1,6 @@
 import express from 'express';
 import { configure, getLogger, Logger } from 'log4js';
 import mongoose from 'mongoose';
-import { dirname } from "path";
-import { realpathSync } from "fs";
 
 import { appConfig, dbConfig } from './config';
 import { hookShutdown } from './nodehooks';
@@ -24,7 +22,7 @@ hookShutdown(process, mongoose, myLogger);
  * Saves to the database
  * @param data The data to be saved 
  */
-const saveReq = function(data: Object): void{
+const saveReq = function (data: Object): void {
     // Testing db connection
     myLogger.info('Attempting Database Connection...');
 
@@ -64,11 +62,11 @@ app.get('/', function (req, res) {
 });
 
 // This route handles paystub 
-app.post(appConfig.payStubsRoute, function(req, res) {
+app.post(appConfig.payStubsRoute, function (req, res) {
     myLogger.info(`A paystub request of type: "${req.get('Content-Type')}" has been received:\n`);
     myLogger.info(`It was sent from address: ${req.ip}`);
     myLogger.info(`Here is the paystub data:\n${req.body.stub}`);
-    
+
     let myParser: IBMStubParser = new IBMStubParser(req.body.stub);
     let parsed = myParser.parse();
 
@@ -91,9 +89,9 @@ app.listen(appConfig.listenPort, appConfig.hostIP, err => {
         myLogger.error(`Something went wrong while listening: ${err}`);
         throw err;
     }
-    myLogger.info(`========== Listening for PayStubs @ ` 
-                + `http://${appConfig.hostIP}:${appConfig.listenPort}${appConfig.payStubsRoute}` 
-                + ` ==========`);
+    myLogger.info(`========== Listening for PayStubs @ `
+        + `http://${appConfig.hostIP}:${appConfig.listenPort}${appConfig.payStubsRoute}`
+        + ` ==========`);
 });
 
 // TODO ==================== TEST ==========================
@@ -101,8 +99,8 @@ const testAxios = function () {
     const axios = require('axios');
     const headers = { 'Content-Type': 'application/json' }
     axios.post(`http://localhost:${appConfig.listenPort}/paystub`, {
-      stub: testSample
-    }, { headers } ).then(val => {
+        stub: testSample
+    }, { headers }).then(val => {
         myLogger.info(`Here is your response: "${val}".`);
     }).catch(err => {
         myLogger.error(`${err}`);
