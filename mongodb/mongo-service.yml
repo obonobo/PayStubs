@@ -1,0 +1,19 @@
+# Exposes app: mongo
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+  namespace: utils-dev
+  labels:
+    service: mongo
+spec:
+  type: NodePort
+  selector:
+    app: mongo
+  ports:
+    - name: mongo-port
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+  

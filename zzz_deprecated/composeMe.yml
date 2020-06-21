@@ -26,4 +26,5 @@ services:
         environment: 
             # TODO Maybe you also need some environment variables 
     
-    
+    paystub_server:
+        image: 

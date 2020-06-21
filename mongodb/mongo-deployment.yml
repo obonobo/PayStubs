@@ -1,0 +1,51 @@
+# A deployment of the paystubs app - database and Node server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  namespace: utils-dev
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      name: mongo
+      namespace: utils-dev
+      labels:
+        app: mongo
+    spec:
+      volumes:
+        - name: paystubs-storage
+          persistentVolumeClaim:
+            claimName: paystub-pv-claim 
+      containers:
+        - name: mongo1
+          image: localhost:32000/utils/mongo:registry
+          ports: 
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: "/data"
+              name: paystubs-storage
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom: 
+                secretKeyRef:
+                  name: mongo-user-pass
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user-pass
+                  key: password
+          resources: 
+            limits:
+              cpu: 1
+              memory: "500Mi"
+            requests:
+              cpu: 1
+              memory: "200Mi"
+          args: ["--auth"]  

@@ -64,7 +64,7 @@ app.get('/', function (req, res) {
 });
 
 // This route handles paystub 
-app.post('/paystub', function(req, res) {
+app.post(appConfig.payStubsRoute, function(req, res) {
     myLogger.info(`A paystub request of type: "${req.get('Content-Type')}" has been received:\n`);
     myLogger.info(`It was sent from address: ${req.ip}`);
     myLogger.info(`Here is the paystub data:\n${req.body.stub}`);
@@ -86,7 +86,7 @@ app.post('/paystub', function(req, res) {
     res.status(200).send('Your paystub has been received and processed!');
 });
 
-app.listen(appConfig.listenPort, err => {
+app.listen(appConfig.listenPort, appConfig.hostIP, err => {
     if (err) {
         myLogger.error(`Something went wrong while listening: ${err}`);
         throw err;
@@ -108,4 +108,4 @@ const testAxios = function () {
         myLogger.error(`${err}`);
     });
 }
-testAxios();
+// testAxios();

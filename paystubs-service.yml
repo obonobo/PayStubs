@@ -1,0 +1,18 @@
+# Exposes app: paystubs
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: paystubs-service
+  namespace: utils-dev
+  labels:
+    service: paystubs
+spec:
+  type: NodePort
+  selector:
+    app: paystubs
+  ports:
+    - name: paystubs-port
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

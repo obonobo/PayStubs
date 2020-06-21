@@ -1,3 +1,9 @@
+# Kubernetes
+data
+TEST_DATA
+temp.txt
+test.json
+
 # MongoDB Configuration
 etc/*
 !etc/mongod.conf
@@ -5,7 +11,6 @@ etc/*
 # I actually want to keep this launch.json configuration
 # just as a reference/reminder
 # .vscode
-
 
 # Logs
 logs

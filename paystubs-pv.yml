@@ -1,0 +1,25 @@
+# This is a configuration file to set up a 
+# Kubernetes PersistentVolume storage object
+# for you cluster. 
+
+# PVs are like Nodes, they are cluster resources.
+# PVs are consumed by PVC (Persistent Volume Claims),
+# which are similar to Pods (Pods consume Node resources,
+# PVCs consume PV resources)
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: paystubs-pv
+  namespace: utils-dev
+  labels:
+    app: paystubs
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/home/ethan/git/PayStubs/data"

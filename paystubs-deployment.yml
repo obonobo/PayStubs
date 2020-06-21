@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paystubs-deployment
+  namespace: utils-dev
+  labels:
+    app: paystubs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paystubs
+  template:
+    metadata:
+      name: paystubs
+      namespace: utils-dev
+      labels:
+        app: paystubs
+    spec:
+      containers:
+        - name: paystubs
+          image: localhost:32000/utils/paystubs:registry
+          ports:
+            - containerPort: 3000
+          env:
+            # For MongoDB
+            - name: DB_PORT
+              value: "31688"
+            - name: DB_IP
+              value: "192.168.2.57"
+            - name: DB_NAME
+              value: paystubs
+            - name: LOG_LEVEL
+              value: "debug"
+    
+            # Login credentials from kubernetes secrets
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user-pass
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user-pass
+                  key: password
+    
+            # For PayStubs app
+            - name: PAYSTUBS_PORT
+              value: "3000"
+            - name: PAYSTUBS_IP
+              value: "localhost"
+            - name: PAYSTUBS_ROUTE
+              value: "/paystub/"
+              
+          resources: 
+            limits: 
+              cpu: 1
+              memory: "500Mi"
+            requests:
+              cpu: 1
+              memory: "200Mi"
+          command: ["node"]
+          args: ["/PayStubs/dist/app.js"]
+    

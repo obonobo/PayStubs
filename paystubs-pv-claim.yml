@@ -1,0 +1,15 @@
+# PVCs (Persistent Volume Claims) are used by Pods
+# in order to request a storage resource. In this case, 
+# we are requesting the PV made from the paystubs-pv.yml
+# file.
+apiVersion: v1
+kind: PersistentVolumeClaim 
+metadata:
+  name: paystub-pv-claim
+spec:
+  storageClassName: manual # This must match the same key in your PV
+  accessModes: 
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
