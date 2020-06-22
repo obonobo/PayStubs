@@ -14,7 +14,8 @@ var labelProcessed = GmailApp.getUserLabelByName("Paystub-PROCESSED");
  * @param paystub 
  */
 function parsePayStub(paystub) {
-
+  let beginning = /Statement of Earnings and Deductions/g;
+  return paystub.substring(paystub.search(beginning), paystub.length)
 }
 
 /**
@@ -24,15 +25,18 @@ function processPayStubs() {
   var threads = label.getThreads();
   for (var i = threads.length - 1; i >= 0; i--) {
     var message = threads[i].getMessages()[0];
-    var htmlMessageBody = message.getBody();
     var plainMessageBody = message.getPlainBody();
-    var rawMessageBody = message.getRawContent();
-//  var parsedStub = parsePayStub(messageBody);
-    
-
-    // replaceLabel(threads[i]);
-//    threads[i].reply(htmlMessageBody).refresh();
-    threads[i].reply(htmlMessageBody).refresh();
+    var response = UrlFetchApp.fetch('http://174.89.83.19:39444/paystub/', {
+      'method': 'post',
+      'contentType': 'application/json',
+      'payload': JSON.stringify({
+        'stub': parsePayStub(plainMessageBody)
+      })
+    });
+    Logger.log(response.getContentText());
+    threads[i].reply(response.getContentText()).refresh();
+    Logger.log(plainMessageBody);
+    replaceLabel(threads[i]);
   }
 }
 
